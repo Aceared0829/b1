@@ -7,9 +7,8 @@
 #include <Components/SphereComponent.h>
 #include <GameFramework/ProjectileMovementComponent.h>
 #include <Kismet/GameplayStatics.h>
-#include <Kismet/KismetMathLibrary.h>
+#include "Particles/ParticleSystemComponent.h"
 
-#include "gtest/gtest-matchers.h"
 
 // Sets default values
 AEnemyCharacter::AEnemyCharacter ()
@@ -35,6 +34,13 @@ AEnemyCharacter::AEnemyCharacter ()
 	check(GenerateProjectilesLocation);
 	GenerateProjectilesLocation->SetRelativeLocation(FVector{ 0.0f,0.0f,40.0f });
 	GenerateProjectilesLocation->SetupAttachment(RootComponent);
+
+	//播放特效的位置
+	PlayParticleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("PlayParticleLocation"));
+	check(PlayParticleLocation);
+	PlayParticleLocation->SetRelativeLocation(FVector{ 0.0f,0.0f,0.0f });
+	PlayParticleLocation->SetRelativeRotation(FRotator{ 0.0f, 0.0f, 0.0f });
+	PlayParticleLocation->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -185,14 +191,49 @@ void AEnemyCharacter::Fire ()
 		SpawnParameters);
 	if (Projectile)
 	{
+		//如果发射物可以生成，播放声音和特效
+		this->PlaySoundAndParticle();
+		// 获取发射方向
 		FVector LaunchDirection = GenerateProjectilesLocation->GetComponentRotation().Vector();
-
 		if (Projectile->ProjectileMovementComponent)
 		{
 			// 让弹射物移动组件根据其自身的 InitialSpeed 和我们提供的方向来开始移动。
 			Projectile->ProjectileMovementComponent->Velocity = LaunchDirection * Projectile->ProjectileMovementComponent->InitialSpeed;
 			// 确保组件是激活状态
 			Projectile->ProjectileMovementComponent->Activate();
+		}
+	}
+}
+
+void AEnemyCharacter::PlaySoundAndParticle()
+{
+	if (FireSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation(),
+			1, FMath::FRandRange(0.4f, 1.3f), 0, FireSoundAttenuation);
+	}
+	if (FireParticleSystem)
+	{
+		UParticleSystemComponent* PSC = UGameplayStatics::SpawnEmitterAtLocation(
+			GetWorld(),
+			FireParticleSystem,
+			PlayParticleLocation->GetComponentLocation(),
+			PlayParticleLocation->GetComponentRotation(),
+			FVector(1.0f),
+			false // 不自动销毁，手动销毁
+		);
+		if (PSC)
+		{
+			// 设置定时器，1秒后销毁粒子组件
+			FTimerHandle ParticleDestroyHandle;
+			GetWorld()->GetTimerManager().SetTimer(
+				ParticleDestroyHandle,
+				FTimerDelegate::CreateLambda([PSC]() {
+					PSC->DestroyComponent();
+				}),
+				BetweenLaunchesTime*3,
+				false // 只执行一次
+			);
 		}
 	}
 }

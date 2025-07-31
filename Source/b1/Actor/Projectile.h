@@ -38,6 +38,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Core")
 	float DamageAmount = 20.0f;
 
+	//Åö×²Á£×ÓÌØÐ§
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Core|Voice", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UParticleSystem> HitParticleSystem;
+
+
 	UFUNCTION(BlueprintCallable)
 	void OnHit (
 		UPrimitiveComponent* HitComponent,

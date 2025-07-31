@@ -48,14 +48,34 @@ public:
 
 	//生成的发射物位置
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Core|Movement|Projectile", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USceneComponent> ProjectilesLocation;
+
+	//生成的发射物位置
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Core|Movement|Projectile", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USceneComponent> GenerateProjectilesLocation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Core|Movement|Projectile", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USceneComponent> PlayParticleLocation;
+	
 
 	//要生成的发射物（子弹、飞镖等等）、具体是什么由蓝图内进行设置
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Core|Movement|Projectile", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<AProjectile> ProjectilesSubclassOf;
 
+	//击发的间隔时间（秒），默认1秒
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Core|Movement|Projectile", meta = (AllowPrivateAccess = "true"))
 	float BetweenLaunchesTime = 1.0f;
+
+	//开火声音
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Core|Movement|Projectile", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USoundBase> FireSound;
+	//开火声音的衰减设置
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Core|Movement|Projectile", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USoundAttenuation> FireSoundAttenuation;
+
+	//开火粒子特效
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Core|Movement|Projectile", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UParticleSystem> FireParticleSystem;
 
 	// 检查能不能看到某个目标
 	// 会考虑距离、角度和是否被遮挡
@@ -66,8 +86,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Vision")
 	void TurnToActor(AActor* TargetActor,float DeltaTime);
 
+	//开火
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	void Fire();
+
+	//播放开火声音和特效
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+	void PlaySoundAndParticle();
 
 	bool bIsFiring = false;
 };

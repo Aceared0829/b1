@@ -6,8 +6,7 @@
 #include <EnhancedInputSubsystems.h>
 #include <InputMappingContext.h>
 #include <b1/HUD/PlayerHUD.h>
-#include <b1/HUD/RestartUserWidget.h>
-#include <Blueprint/UserWidget.h>
+
 
 
 void AThirdPersonPlayerController::BeginPlay ()
@@ -57,5 +56,13 @@ void AThirdPersonPlayerController::UpdateHealthWidget (float HealthPercent)
 	if (PlayerHUD)
 	{
 		PlayerHUD->UpdateHealth(HealthPercent); //更新血量UI
+	}
+}
+
+void AThirdPersonPlayerController::CreateAndShowVictoryWidget()
+{
+	if (PlayerHUD)
+	{
+		PlayerHUD->CreateAndShowVectorWidget(); //创建并显示胜利UI
 	}
 }

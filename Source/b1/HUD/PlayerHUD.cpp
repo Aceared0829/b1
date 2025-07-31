@@ -6,7 +6,27 @@
 #include <Blueprint/UserWidget.h>
 #include "HealthWidget.h"
 #include "RestartUserWidget.h"
+#include "VectorUserWidget.h"
 
+
+void APlayerHUD::CreateAndShowVectorWidget()
+{
+	//创建并显示血量UI
+	if (TObjectPtr<APlayerController> PlayerController = GetOwningPlayerController())
+	{
+		PlayerController->SetPause(true);//暂停游戏
+		PlayerController->SetInputMode(FInputModeUIOnly());//设置输入模式为UI模式
+		PlayerController->bShowMouseCursor = true;//显示鼠标光标
+		if (VectorUserWidgetClass)
+		{
+			VectorUserWidget = CreateWidget<UVectorUserWidget>(PlayerController, VectorUserWidgetClass);
+			if (VectorUserWidget)
+			{
+				VectorUserWidget->AddToViewport();
+			}
+		}
+	}
+}
 
 void APlayerHUD::CreateRestartWidget()
 {
@@ -77,3 +97,4 @@ void APlayerHUD::UpdateHealth (float HealthPercent)
 		HealthWidget->UpdateHealthPercent(HealthPercent);
 	}
 }
+

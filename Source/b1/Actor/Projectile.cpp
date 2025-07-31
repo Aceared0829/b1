@@ -8,6 +8,8 @@
 #include <GameFramework/Character.h>
 #include <GameFramework/ProjectileMovementComponent.h>
 
+#include "Kismet/GameplayStatics.h"
+
 
 // Sets default values
 AProjectile::AProjectile()
@@ -60,8 +62,20 @@ void AProjectile::OnHit (UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 		if (TObjectPtr<UHealthComponent> HealthComponent = Player->FindComponentByClass<UHealthComponent>())
 		{
 			HealthComponent->TakeDamage(DamageAmount);
-			this->Destroy();
 		}
+		if (HitParticleSystem)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticleSystem, GetActorLocation());
+		}
+		Destroy();
+	}
+	if (TObjectPtr<UStaticMesh> StaticMesh = Cast<UStaticMesh>(OtherActor))
+	{
+		if (HitParticleSystem)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticleSystem, GetActorLocation());
+		}
+		Destroy();
 	}
 }
 

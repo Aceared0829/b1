@@ -29,6 +29,8 @@ public:
 	void HideRestartWidget();
 	//更新血量UI
 	void UpdateHealthWidget(float HealthPercent);
+	//创建并显示胜利UI
+	void CreateAndShowVictoryWidget();
 
 	UPROPERTY()
 	TObjectPtr<APlayerHUD> PlayerHUD;

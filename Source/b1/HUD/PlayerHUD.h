@@ -3,10 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
 #include "GameFramework/HUD.h"
 #include "PlayerHUD.generated.h"
 
+class UVectorUserWidget;
 class UHealthWidget;
 class URestartUserWidget;
 /**
@@ -29,6 +29,16 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = HUD)
 	TObjectPtr<URestartUserWidget> RestartUserWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HUD)
+	TSubclassOf<UVectorUserWidget> VectorUserWidgetClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HUD)
+	TObjectPtr<UVectorUserWidget> VectorUserWidget;
+
+	//创建并显示胜利UI
+	void CreateAndShowVectorWidget();
+
 	//创建重启UI
 	void CreateRestartWidget();
 	//显示重启UI
